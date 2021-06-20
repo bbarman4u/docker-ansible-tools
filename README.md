@@ -68,7 +68,7 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
    ```
 
 ## Source Code
-- Github Link is [bbarman4u/docker-ansible-tools]](https://github.com/bbarman4u/docker-ansible-tools)
+- Github Link is [bbarman4u/docker-ansible-tools](https://github.com/bbarman4u/docker-ansible-tools)
 
 ## References:
 - Heavily inspired and built by referencing the work done by [jmal98/ansiblecm](https://github.com/jmal98/ansiblecm) and [geektechdude/ansible_container](https://github.com/geektechdude/ansible_container)
