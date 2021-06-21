@@ -5,12 +5,12 @@ ENV ANSIBLE_VERSION=2.10.7
 ENV ANSIBLE_GATHERING smart
 ENV ANSIBLE_HOST_KEY_CHECKING False
 ENV ANSIBLE_RETRY_FILES_ENABLED False
-ENV ANSIBLE_ROLES_PATH /ansible/playbooks/roles
+ENV ANSIBLE_ROLES_PATH /home/ansible/playbooks/roles
 ENV ANSIBLE_SSH_PIPELINING True
-ENV PATH /ansible/bin:$PATH
-ENV PYTHONPATH /ansible/lib
+ENV PATH /home/ansible/bin:$PATH
+ENV PYTHONPATH /home/ansible/lib
 
-RUN mkdir /etc/ansible /ansible ~/.ssh /ansible/playbooks
+RUN mkdir /etc/ansible /home/ansible /home/ansible/.ssh /home/ansible/playbooks
 
 RUN apk add --no-cache \
 		bzip2 \
@@ -49,16 +49,22 @@ RUN apk add --no-cache \
 	apk del build-dependencies \
 		&& \
 	rm -rf /root/.cache
+
+COPY scripts/docker-entrypoint.sh /home/ansible/docker-entrypoint.sh
 # Over rides SSH Hosts Checking
-RUN echo "host *" >> ~/.ssh/config &&\
-    echo "StrictHostKeyChecking no" >> ~/.ssh/config
+RUN echo "host *" >> /home/ansible/.ssh/config &&\
+    echo "StrictHostKeyChecking no" >> /home/ansible/.ssh/config &&\
+	chmod +x /home/ansible/docker-entrypoint.sh
 
-WORKDIR /ansible/playbooks
+WORKDIR /home/ansible/playbooks
 
-# Sets entry point (same as running ansible-playbook)
-ENTRYPOINT ["ansible-playbook"]
+# Sets custom entry point
+ENTRYPOINT ["/home/ansible/docker-entrypoint.sh"]
 
-# Can also use ["ansible"] if wanting it to be an ad-hoc command version
+# Can also use ["ansible-playbook"] entry point (same as running ansible-playbook)
+#ENTRYPOINT ["ansible-playbook"]
+
+# Can also use ["ansible"] if wanting to run adhoc ansible commands
 #ENTRYPOINT ["ansible"]
 
 CMD ["--version"]

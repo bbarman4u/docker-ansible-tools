@@ -2,4 +2,4 @@
 .gitignore
 *.md
 Dockerfile
-SECURE.md
+*.md
