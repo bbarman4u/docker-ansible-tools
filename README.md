@@ -107,7 +107,32 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
    ```
    docker run -it --rm --net=host -v ${PWD}:/home/ansible/playbooks:ro -v "${HOME}/.ssh:/tmp/.ssh/:ro" bb8docker/docker-ansible-tools:2.10.7 ansible pwd_all -m ping -i inventory2 -vv
    ```
+## Ansible Configurations
+### ansible.cfg
+- The entry point script `docker-entrypoint.sh` will copy over an `ansible.cfg` file if found in the current directory for the playbook execution to another directory `/home/ansible/config` which has the right permissions and will set the environment variable `ANSIBLE_CONFIG` to this directory so that the ansible configurations can take effect.
+- This is important if you want to apply some local ansible configurations during the execution of the playbook
+- Sample ansible.cfg:
+  ```
+  [defaults]
+  inventory = inventory
+  host_key_checking = false
+  callback_whitelist = profile_tasks
 
+  [ssh_connection]
+  #scp_if_ssh = smart
+  #ssh_args = -C -o ControlMaster=auto -o ControlPersist=60s
+  #control_path = /dev/shm/cp%%h-%%p-%%r
+  #control_path_dir = /dev/shm/ansible_control_path
+  ```
+
+### Inventory File Configurations
+- Specify different host specific configurations in the inventory file in ini or YAML format.
+- Important: You need to specify the full path to the SSH Private Key file (present on the docker container) against your host details in the inventory file
+- Sample Inventory File (ini format):
+  ```
+  [pwd_all]
+  node1 ansible_host=ip172-18-0-25-c33n7gnnjsv000eor760@direct.labs.play-with-docker.com ansible_port=22 ansible_user=root ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa ansible_python_interpreter=/usr/bin/python3
+  ```
 ## Source Code
 - Github Link for this is [bbarman4u/docker-ansible-tools](https://github.com/bbarman4u/docker-ansible-tools)
 
