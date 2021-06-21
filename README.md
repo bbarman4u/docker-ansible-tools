@@ -37,17 +37,12 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
 ### Playbook Path Volume Mount (Required)
 - For using the locally built Image or the image pulled from the docker hub, you need to mount the path of the location of your working directory where the playbook, inventory file, etc. exists.
 - The playbooks are expected to be mounted inside the container in a working directory of `/home/ansible/playbooks`. We can also set it to read only to avoid any files being modified by container on the host.
-- Example(On Windows):
+- Example(On Windows/Linux/Mac):
   ```
   -v ${PWD}:/home/ansible/playbooks:ro
 
   ```
-- Example (On Linux/Mac):
 
-  ```
-   -v $(PWD):/home/ansible/playbooks:ro 
-
-  ```
 ### SSH Key Path Volume Mount (Optional)
 - This is required only if you want to use passwordless authentication via SSH Keys for the remote hosts.
 - The host SSH keys (generated using ssh-keygen) are expected to be mounted inside the container in a working directory of `/tmp/.ssh`. We can also set it to read only to avoid any files being modified by container on the host.
@@ -68,7 +63,7 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
   - Example (On Linux/Mac):
 
     ```
-    -v $HOME/.ssh:/tmp/.ssh/:ro
+    -v ${HOME}/.ssh:/tmp/.ssh/:ro
     ```
 
 ### Playbook Execution (Passwordless Authentication with SSH Keys)
