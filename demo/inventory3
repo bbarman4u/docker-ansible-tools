@@ -1,0 +1,13 @@
+[pwd_managers]
+pwd_manager1 ansible_host=ip172-18-0-25-c33n7gnnjsv000eor760@direct.labs.play-with-docker.com ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa
+
+[pwd_workers]
+pwd_worker1 ansible_host=ip172-18-0-25-c33n7gnnjsv000eor760@direct.labs.play-with-docker.com ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa
+
+[pwd_all:children]
+pwd_managers
+pwd_workers
+
+[pwd_all:vars]
+ansible_port=22
+ansible_python_interpreter=/usr/bin/python3

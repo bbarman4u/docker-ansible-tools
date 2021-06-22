@@ -1,0 +1,14 @@
+[pwd_managers]
+pwd_manager1 ansible_host=localhost ansible_connection=local
+
+[pwd_workers]
+pwd_worker1 ansible_host=localhost ansible_connection=local
+
+
+[pwd_all:children]
+pwd_managers
+pwd_workers
+
+[pwd_all:vars]
+ansible_port=22
+ansible_python_interpreter=/usr/bin/python3

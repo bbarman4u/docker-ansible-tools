@@ -1,0 +1,8 @@
+- hosts: "{{ HOSTS }}"
+  tasks:
+    - name: find my remote node hostname
+      script:  demo-script.sh
+      register: output
+      delegate_facts: false
+    - debug: var=output.stdout_lines
+    
