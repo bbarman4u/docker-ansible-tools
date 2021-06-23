@@ -131,9 +131,9 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
   docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro -v "${HOME}/.ssh:/tmp/.ssh/:ro" bb8docker/docker-ansible-tools:2.10.7 ansible-playbook <playbook-name> -i <inventory-path> <additional arguments>
   ```
 
-- Example: Execute a playbook with passing HOSTS variable to playbook
+- Example: Execute a playbook with passing HOSTS variable to playbook and mounting SSH Keys
    ```
-    docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro -v "${HOME}/.ssh:/tmp/.ssh/:ro" bb8docker/docker-ansible-tools:2.10.7 ansible-playbook ping-playbook.yml -i inventory2 -e HOSTS=pwd_all
+    docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro -v "${HOME}/.ssh:/tmp/.ssh/:ro" bb8docker/docker-ansible-tools:2.10.7 ansible-playbook demo-playbook2.yml -i inventory2 -e HOSTS=pwd_all
    ```
 
 #### Asking for Password with out SSH Keys
@@ -145,9 +145,61 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
 
 - Example:
    ```
-    docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro bb8docker/docker-ansible-tools:2.10.7 ansible-playbook ping-playbook.yml -i inventory2 -e HOSTS=pwd_all -k
+    docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro bb8docker/docker-ansible-tools:2.10.7 ansible-playbook demo-playbook2.yml -i inventory2 -e HOSTS=pwd_all -k
    ```
 
+## Using Powershell Aliases for running the docker commands
+- If you are tired of typing these long commands every time especially for the parts that don't change often, you can set powershell aliases and can make your life that much easier so that you are typing only required commands just like you would have done if you had ansible installed natively.
+- Here is a sample powershell function that you can use or feel free to customize it to your preferred command and then you can re run your commands with the short cut alias.
+- Type this on a powershell window `notepad $PROFILE`. The very first time it will ask to create and save a file named like `Microsoft.PowerShell_profile.ps1` to your powershell profile path.
+- Add entries like below to that file and open up a new powershell window to use these aliases. We are using the `Set-Alias` commandlet which will be saved and be persistent with this method.
+  ```
+    function Run-AnsibleDockerPlaybookWithSSHKeys {
+        docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro -v "${HOME}/.ssh:/tmp/.ssh/:ro" bb8docker/docker-ansible-tools:2.10.7 $args
+    }
+    Set-Alias ssh-play Run-AnsibleDockerPlaybookWithSSHKeys
+
+    function Run-AnsibleDockerPlaybookWithOutSSHKeys {
+        docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro bb8docker/docker-ansible-tools:2.10.7 $args
+    }
+    Set-Alias ask-passwd-play Run-AnsibleDockerPlaybookWithOutSSHKeys
+
+    function Run-AnsibleDockerGenericCommands {
+        docker run -it --rm -v ${PWD}:/home/ansible/playbooks:ro bb8docker/docker-ansible-tools:2.10.7 $args
+    }
+    Set-Alias ansible-tools Run-AnsibleDockerGenericCommands
+  ```
+- Examples while using the alias (refer to the Demo Execution Section & other examples for use without the alias) 
+    - Sample Ansible adhoc command that runs `ping` against `localhost`:
+      ```
+        ansible-tools ansible localhost -m ping -i inventory2
+
+      ```
+
+    - Sample Ansible Playbook command that executes `demo-playbook1.yml` against `localhost`:
+      ```
+      ansible-tools ansible-playbook demo-playbook1.yml
+
+      ```
+    - Sample Ansible Playbook command that executes `demo-playbook2.yml` against `localhost` by passing the `HOSTS` variable:
+      ```
+      ansible-tools ansible-playbook demo-playbook2.yml -e HOSTS=localhost
+
+      ```
+    - Sample Ansible Playbook command that executes `demo-playbook2.yml` against `pwd_all` by passing the `HOSTS` variable & using an inventory file `inventory2`:
+      ```
+      ansible-tools ansible-playbook demo-playbook2.yml -e HOSTS=pwd_all -i inventory2
+
+      ```
+    - Sample Ansible Playbook command that executes a playbook with passing HOSTS variable to playbook and mounting SSH Keys
+      ```
+        ssh-play ansible-playbook demo-playbook2.yml -i inventory2 -e HOSTS=pwd_all
+      ```
+    - Sample Ansible Playbook command that executes a playbook that asks for password
+      ```
+        ask-passwd-play ansible-playbook demo-playbook2.yml -i inventory2 -e HOSTS=pwd_all -k
+      ```
+      
 ## Ansible Configurations
 ### ansible.cfg
 - The entry point script `docker-entrypoint.sh` will copy over an `ansible.cfg` file if found in the current directory for the playbook execution to another directory `/home/ansible/config` which has the right permissions and will set the environment variable `ANSIBLE_CONFIG` to this directory so that the ansible configurations can take effect.
@@ -199,3 +251,4 @@ Ansible development is fairly simple if you are on a Mac OS or on a Linux machin
 - Very good reference article for newcomers to docker with ansible by [Josh Duffney at Duffney.io](https://duffney.io/containers-for-ansible-development/)
 - Thanks to Nick Janetakis for idea for the SSH problem on Windows, [detailed article here](https://nickjanetakis.com/blog/docker-tip-56-volume-mounting-ssh-keys-into-a-docker-container)
 - For a more advanced replacement for ansible development container (does not work on windows 10 yet without WSL2) is [cytopia/docker-ansible](https://github.com/cytopia/docker-ansible)
+- [Must have powershell aliases for docker](https://blog.sixeyed.com/your-must-have-powershell-aliases-for-docker/)
