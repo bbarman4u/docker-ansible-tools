@@ -39,6 +39,7 @@ RUN apk add --no-cache \
 	  && \
 	pip3 install \
 		ansible==2.10.7 \
+		netaddr==0.8.0	\
 		botocore==1.20.32 \
 		boto==2.49.0 \
 		PyYAML==5.4.1 \
