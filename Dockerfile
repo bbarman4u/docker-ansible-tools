@@ -30,6 +30,7 @@ RUN apk add --no-cache \
 		py3-setuptools=51.3.3-r0 \
 		sshpass \
 		tar \
+		bash \
 		&& \
 	apk add --no-cache --virtual build-dependencies \
 		gcc \

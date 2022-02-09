@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 ANSIBLE_SSH_DIR="/home/ansible/.ssh"
